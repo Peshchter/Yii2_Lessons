@@ -10,4 +10,11 @@ class Activity extends \yii\base\Model
     public $finish;         //конец события (timestamp)
     public $repeatable;     //повторяемое
     public $blocker;        //блокирующее
+
+    /* @return  Activity */
+    public function find($id)
+    {
+        return $this;
+    }
+
 }
