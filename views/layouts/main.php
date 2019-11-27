@@ -42,6 +42,8 @@ AppAsset::register($this);
             ['label' => 'About', 'url' => ['/site/about']],
             ['label' => 'Contact', 'url' => ['/site/contact']],
             ['label' => 'Справка', 'url' => ['/site/help']],
+            ['label' => 'Добавить событие', 'url' => ['/activity/add']],
+            ['label' => 'Просмотр', 'url' => ['/activity/view']],
             Yii::$app->user->isGuest ? (
                 ['label' => 'Login', 'url' => ['/site/login']]
             ) : (
