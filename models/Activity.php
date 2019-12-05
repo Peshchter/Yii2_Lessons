@@ -17,7 +17,7 @@ use yii\db\ActiveRecord;
  * @property bool $repeatable
  * @property bool $blocker
  * @property int $user_id
- * @property string[] $description
+ * @property string $description
  * @property int $created_at
  * @property int $updated_at
  */
@@ -79,6 +79,7 @@ class Activity extends ActiveRecord
             [['repeatable', 'blocker'],'boolean'],
             ['start','required'],
             ['finish','check'],
+            ['description','safe'],
         //    [['start','finish'],'date'],
         ];
     }
@@ -86,7 +87,8 @@ class Activity extends ActiveRecord
     public function check()
     {
         $this->start = strtotime($this->start);
-        $this->finish = strtotime($this->finish);
+        empty($this->finish) ? $this->finish = time() :  $this->finish = strtotime($this->finish);
+
 
         return $this->start < $this->finish ? $this->finish : $this->start ;
     }
