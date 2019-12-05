@@ -17,7 +17,7 @@ use yii\db\ActiveRecord;
  * @property bool $repeatable
  * @property bool $blocker
  * @property int $user_id
- * @property string $description
+ * @property string[] $description
  * @property int $created_at
  * @property int $updated_at
  */
@@ -67,5 +67,29 @@ class Activity extends ActiveRecord
     {
         return static::findOne(['id' => $id]);
     }
+
+    /**
+     * @return array the validation rules.
+     */
+    public function rules()
+    {
+        return [
+            // name  required
+            [['name'], 'required', 'message'=>'{attribute} нельзя оставлять пустым!'],
+            [['repeatable', 'blocker'],'boolean'],
+            ['start','required'],
+            ['finish','check'],
+        //    [['start','finish'],'date'],
+        ];
+    }
+
+    public function check()
+    {
+        $this->start = strtotime($this->start);
+        $this->finish = strtotime($this->finish);
+
+        return $this->start < $this->finish ? $this->finish : $this->start ;
+    }
+
 
 }

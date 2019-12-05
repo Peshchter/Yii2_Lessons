@@ -46,8 +46,8 @@ AppAsset::register($this);
         $menuItems[] = ['label' => 'Регистрация', 'url' => ['/site/signup']];
         $menuItems[] = ['label' => 'Вход', 'url' => ['/site/login']];
     }else{
-        $menuItems[] = ['label' => 'Добавить событие', 'url' => ['/activity/add']];
-        $menuItems[] = ['label' => 'Просмотр', 'url' => ['/activity/view']];
+        $menuItems[] = ['label' => 'Добавить событие', 'url' => ['/activity/create']];
+        $menuItems[] = ['label' => 'Просмотр', 'url' => ['/activity']];
         $menuItems[] = '<li>'
                 . Html::beginForm(['/site/logout'], 'post')
                 . Html::submitButton(

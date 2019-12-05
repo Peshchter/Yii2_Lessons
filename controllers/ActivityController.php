@@ -7,7 +7,6 @@ use app\models\Activity;
 use app\models\ActivityAddForm;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
-
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
@@ -62,26 +61,19 @@ class ActivityController extends Controller
     public function actionCreate()
     {
         $model = new Activity();
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
+       if( $model->load(Yii::$app->request->post()))
+       {
+           $model->user_id = \Yii::$app->user->id;
+           if ($model->save()) {
+               return $this->redirect(['view', 'id' => $model->id]);
+           }
+       }
 
         return $this->render('create', [
             'model' => $model,
         ]);
     }
 
-
-    public function actionAdd()
-    {
-        $model = new ActivityAddForm();
-        $activity = new Activity();
-        if ($id = (int)Yii::$app->request->get()) {
-            $activity = Activity::findOne(['id' => $id]);
-            return $this->render('add', ['model' => $activity]);
-        }
-        return $this->render('add', ['model' => $model,]);
-    }
 
     /**
      * Updates an existing Activity model.
