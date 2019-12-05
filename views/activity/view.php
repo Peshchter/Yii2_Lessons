@@ -1,32 +1,45 @@
 <?php
-/* @var $this yii\web\View */
-/* @var $form yii\bootstrap\ActiveForm */
-
-/* @var $model app\models\Activity */
 
 use yii\helpers\Html;
-use yii\bootstrap\ActiveForm;
+use yii\widgets\DetailView;
 
-$this->title = 'Просмотр события';
+/* @var $this yii\web\View */
+/* @var $model app\models\Activity */
+
+$this->title = $model->name;
+$this->params['breadcrumbs'][] = ['label' => 'События', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
-$model->name = 'День рождения';
-$model->description = 'Главное событие жизни ребенка';
-$model->start = time();
-$model->blocker = true;
+\yii\web\YiiAsset::register($this);
 ?>
+<div class="activity-view">
 
-<div class="site-about">
-    <h1><?= $model->name ?></h1>
-    <p><?= $model->description ?></p>
+    <h1><?= Html::encode($this->title) ?></h1>
+
     <p>
-        <?php if ($model->blocker) {
-            echo "Продлится весь день " . date("d F Y", $model->start);
-        } else {
-            echo "Начинается " . date("H:i d/m/Y", $model->start) . " и продлится до " .
-                date("H:i d/m/Y", $model->finish);
-        }
-        ?>
+        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
+            'class' => 'btn btn-danger',
+            'data' => [
+                'confirm' => 'Are you sure you want to delete this item?',
+                'method' => 'post',
+            ],
+        ]) ?>
     </p>
-    <?= Html::a('Назад', \yii\helpers\Url::previous(),  ['class'=>'btn btn-info']);   ?>
-    <?= Html::a('Редактировать', \yii\helpers\Url::to('activity/edit'),  ['class'=>'btn btn-warning']); ?>
+
+    <?= DetailView::widget([
+        'model' => $model,
+        'attributes' => [
+            'id',
+            'name',
+            'start',
+            'finish',
+            'repeatable',
+            'user_id',
+            'description:ntext',
+            'blocker',
+            'created_at',
+            'updated_at',
+        ],
+    ]) ?>
+
 </div>
