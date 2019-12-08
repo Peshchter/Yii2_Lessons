@@ -12,8 +12,8 @@ use yii\db\ActiveRecord;
  *
  * @property int $id
  * @property string $name
- * @property string $start
- * @property string $finish
+ * @property int $start
+ * @property int $finish
  * @property bool $repeatable
  * @property bool $blocker
  * @property int $user_id
@@ -55,7 +55,7 @@ class Activity extends ActiveRecord
     public function behaviors()
     {
         return [
-            TimestampBehavior::className()
+            TimestampBehavior::class
         ];
     }
 
@@ -90,7 +90,10 @@ class Activity extends ActiveRecord
         empty($this->finish) ? $this->finish = time() :  $this->finish = strtotime($this->finish);
 
 
-        return $this->start < $this->finish ? $this->finish : $this->start ;
+        if ($this->start > $this->finish)
+        {
+            $this->finish = $this->start;
+        }
     }
 
 

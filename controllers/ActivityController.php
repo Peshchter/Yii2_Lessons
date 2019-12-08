@@ -19,7 +19,7 @@ class ActivityController extends Controller
     {
         return [
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
                 ],
@@ -119,18 +119,6 @@ class ActivityController extends Controller
             return $model;
         }
         throw new NotFoundHttpException('The requested page does not exist.');
-    }
-
-    public function actionSubmit()
-    {
-        $model = new ActivityAddForm();
-
-        if ($model->load(Yii::$app->request->post())) {
-            if ($activity = $model->check()) {
-                return $this->render('submit', ['model' => $activity]);
-            }
-        }
-        return $this->render('submit');
     }
 
 }

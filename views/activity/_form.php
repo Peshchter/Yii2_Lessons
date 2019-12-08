@@ -19,7 +19,7 @@ use kartik\date\DatePicker;
         'pluginOptions' => [
             'autoclose' => true,
             'language' => 'ru',
-            'format' => 'dd MM yyyy',
+            'format' => 'dd.mm.yyyy',
         ]
     ]); ?>
     <?= $form->field($model, 'finish')->widget(DatePicker::classname(), [
@@ -27,7 +27,7 @@ use kartik\date\DatePicker;
         'pluginOptions' => [
             'autoclose' => true,
             'language' => 'ru',
-            'format' => 'dd MM yyyy',
+            'format' => 'dd.mm.yyyy',
         ]
     ]); ?>
     <?= $form->field($model, 'repeatable')->checkbox([

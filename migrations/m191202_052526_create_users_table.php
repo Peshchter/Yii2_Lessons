@@ -17,7 +17,7 @@ class m191202_052526_create_users_table extends Migration
             'username' => $this->string(255)->notNull(),
             'password_hash' => $this->string(255)->notNull(),
             'authKey' => $this->string(255)->notNull(),
-            'accessToken' => $this->string(255)->notNull(),
+            'accessToken' => $this->string(255),
             'password_reset_token' => $this->string()->unique(),
             'email' => $this->string()->notNull()->unique(),
             'status' => $this->smallInteger()->notNull()->defaultValue(10),
