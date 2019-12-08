@@ -11,22 +11,40 @@ use yii\web\IdentityInterface;
 /**
  * User model
  *
- * @property integer $id
+ * @property int $id
  * @property string $username
  * @property string $password_hash
  * @property string $password_reset_token
  * @property string $email
  * @property string $authKey
- * @property integer $status
- * @property integer $created_at
- * @property integer $updated_at
+ * @property int $status
+ * @property int $created_at
+ * @property int $updated_at
+ * @property string $role
+
  * @property string $password write-only password
+ * @property Activity[] $activities
  */
 
 class User extends ActiveRecord implements IdentityInterface
 {
     const STATUS_DELETED = 0;
     const STATUS_ACTIVE = 10;
+    const EVENT_PASS_GEN = 'passgen';
+
+    public function init()
+    {
+        $this->on(self::EVENT_PASS_GEN, [$this, 'generatePassword']);
+        parent::init();
+    }
+
+    public function generatePassword($event)
+    {
+        $password = \Yii::$app->security->generateRandomString(8);
+        //добавить отправку
+        $this->setPassword($password);
+
+    }
 
     /**
      * @inheritdoc
@@ -42,7 +60,8 @@ class User extends ActiveRecord implements IdentityInterface
     public function behaviors()
     {
         return [
-            TimestampBehavior::className()
+            TimestampBehavior::class,
+
         ];
     }
 
@@ -54,6 +73,10 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
+            [['username', 'email'], 'required'],
+            [['status', 'created_at', 'updated_at'], 'integer'],
+            [['username', 'email', 'role'], 'string', 'max' => 255],
+            [['email'], 'unique'],
         ];
     }
 
@@ -82,6 +105,16 @@ class User extends ActiveRecord implements IdentityInterface
     public static function findByUsername($username)
     {
         return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
+    }
+    /**
+     * Finds user by id
+     *
+     * @param int $id
+     * @return static|null
+     */
+    public static function findById($id)
+    {
+        return static::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
     }
 
     /**
@@ -136,4 +169,13 @@ class User extends ActiveRecord implements IdentityInterface
     {
         $this->authKey = Yii::$app->security->generateRandomString();
     }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getActivities()
+    {
+        return $this->hasMany(Activity::class, ['user_id' => 'id']);
+    }
+
 }

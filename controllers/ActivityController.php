@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\ActivitySearch;
 use Yii;
 use app\models\Activity;
 use app\models\ActivityAddForm;
@@ -29,11 +30,14 @@ class ActivityController extends Controller
 
     public function actionIndex()
     {
-        $dataProvider = new ActiveDataProvider([
-            'query' => Activity::find(),
-        ]);
+        $searchModel = new ActivitySearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+//            new ActiveDataProvider([
+//            'query' => Activity::find(),
+//        ]);
         return $this->render('index', [
             'dataProvider' => $dataProvider,
+            'searchModel' => $searchModel,
         ]);
     }
 
