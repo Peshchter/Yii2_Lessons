@@ -1,6 +1,7 @@
 <?php
 
 /* @var $this \yii\web\View */
+
 /* @var $content string */
 
 use app\widgets\Alert;
@@ -36,26 +37,28 @@ AppAsset::register($this);
         ],
     ]);
     $menuItems =
-            [['label' => 'Домой', 'url' => ['/site/index']],
+        [['label' => 'Домой', 'url' => ['/site/index']],
             ['label' => 'О сайте', 'url' => ['/site/about']],
             ['label' => 'Контакты', 'url' => ['/site/contact']],
             ['label' => 'Справка', 'url' => ['/site/help']],
-
-            ];
+        ];
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => 'Регистрация', 'url' => ['/site/signup']];
         $menuItems[] = ['label' => 'Вход', 'url' => ['/site/login']];
-    }else{
+    } else {
         $menuItems[] = ['label' => 'Добавить событие', 'url' => ['/activity/create']];
-        $menuItems[] = ['label' => 'Просмотр', 'url' => ['/activity']];
+        $menuItems[] = ['label' => 'Просмотр событий', 'url' => ['/activity']];
+        if (\Yii::$app->user->identity->role == 'admin') {
+            $menuItems[] = ['label' => 'Пользователи', 'url' => ['/users']];
+        }
         $menuItems[] = '<li>'
-                . Html::beginForm(['/site/logout'], 'post')
-                . Html::submitButton(
-                    'Выход (' . Yii::$app->user->identity->username . ')',
-                    ['class' => 'btn btn-link logout']
-                )
-                . Html::endForm()
-                . '</li>';
+            . Html::beginForm(['/site/logout'], 'post')
+            . Html::submitButton(
+                'Выход (' . Yii::$app->user->identity->username . ')',
+                ['class' => 'btn btn-link logout']
+            )
+            . Html::endForm()
+            . '</li>';
     }
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],

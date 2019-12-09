@@ -96,5 +96,30 @@ class Activity extends ActiveRecord
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
 
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'id',
+            'name' => 'Название',
+            'start' => 'Начало',
+            'finish' => 'Окончание',
+            'description' =>'Краткое описание',
+            'created_at' => 'Создано',
+            'updated_at' => 'Изменено',
+            'repeatable' => 'Повторяется?',
+            'blocker' => 'Основное?'
+        ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUser()
+    {
+        return $this->hasOne(User::class, ['id' => 'user_id']);
+    }
 }

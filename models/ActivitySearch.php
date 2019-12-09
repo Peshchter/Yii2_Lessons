@@ -11,15 +11,25 @@ use app\models\Activity;
  */
 class ActivitySearch extends Activity
 {
+
+    public $userName;
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['id', 'start', 'finish', 'repeatable', 'user_id', 'blocker', 'created_at', 'updated_at'], 'integer'],
+            [['id',  'user_id',  'created_at', 'updated_at'], 'integer'],
             [['name', 'description'], 'safe'],
+            [['repeatable', 'blocker'], 'check'],
+            [['userName'], 'string'],
+            [['start', 'finish'], 'date', 'format' => 'php:d.m.Y'],
         ];
+    }
+
+    public function check()
+    {
+        return true;
     }
 
     /**
@@ -56,17 +66,39 @@ class ActivitySearch extends Activity
             return $dataProvider;
         }
 
+        if (!empty($this->start))
+        {
+            $dayStart = (int)\Yii::$app->formatter->asTimestamp($this->start . ' 00:00:00');
+            $dayFinish = (int)\Yii::$app->formatter->asTimestamp($this->start . ' 23:59:59');
+            $query->andWhere(['between', 'start', $dayStart, $dayFinish]);
+        }
+
+        if (!empty($this->finish))
+        {
+            $dayStart = (int)\Yii::$app->formatter->asTimestamp($this->finish . ' 00:00:00');
+            $dayFinish = (int)\Yii::$app->formatter->asTimestamp($this->finish . ' 23:59:59');
+            $query->andWhere(['between', 'finish', $dayStart, $dayFinish]);
+        }
+
+
+        if (!empty($this->userName))
+        {
+            $query->joinWith('user');
+            $query->andWhere(['like', 'users.username', $this->userName]);
+        }
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'start' => $this->start,
-            'finish' => $this->finish,
             'repeatable' => $this->repeatable,
             'user_id' => $this->user_id,
             'blocker' => $this->blocker,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
+
+        if (\Yii::$app->user->identity->role != 'admin') {
+            $query->andWhere(['=', 'user_id', \Yii::$app->user->id] );
+        }
 
         $query->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'description', $this->description]);

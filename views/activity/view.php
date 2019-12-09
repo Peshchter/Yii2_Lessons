@@ -31,14 +31,32 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'name',
-            'start',
-            'finish',
-            'repeatable',
-            'user_id',
             'description:ntext',
-            'blocker',
-            'created_at',
-            'updated_at',
+            'start:date',
+            'finish:date',
+            [
+                'attribute' => 'repeatable',
+                'value' => function (\app\models\Activity $model) {
+                    return $model->blocker ? "Да" : "Нет";
+                }
+            ],
+            [
+                'attribute' => 'user_id',
+                'label' => 'Владелец',
+                'value' => function (\app\models\Activity $model) {
+                    return $model->user->username;
+                }
+            ],
+
+            [
+                'attribute' => 'blocker',
+                'value' => function (\app\models\Activity $model) {
+                    return $model->blocker ? "Да" : "Нет";
+                }
+            ],
+
+            'created_at:date',
+            'updated_at:date',
         ],
     ]) ?>
 

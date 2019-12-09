@@ -14,7 +14,7 @@ use kartik\date\DatePicker;
     <?php $form = ActiveForm::begin(); ?>
     <?= $form->field($model, 'name')->textInput(['maxlength' => true, 'autofocus' => true]) ?>
     <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
-    <?= $form->field($model, 'start')->widget(DatePicker::classname(), [
+    <?= $form->field($model, 'start')->widget(DatePicker::class, [
         'options' => ['placeholder' => 'Введите дату начала...'],
         'pluginOptions' => [
             'autoclose' => true,
@@ -22,7 +22,7 @@ use kartik\date\DatePicker;
             'format' => 'dd.mm.yyyy',
         ]
     ]); ?>
-    <?= $form->field($model, 'finish')->widget(DatePicker::classname(), [
+    <?= $form->field($model, 'finish')->widget(DatePicker::class, [
         'options' => ['placeholder' => 'Введите дату окончания...'],
         'pluginOptions' => [
             'autoclose' => true,
