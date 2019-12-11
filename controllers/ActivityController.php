@@ -3,9 +3,11 @@
 namespace app\controllers;
 
 use app\models\ActivitySearch;
+use app\models\User;
 use Yii;
 use app\models\Activity;
 use app\models\ActivityAddForm;
+use yii\base\Exception;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -123,6 +125,29 @@ class ActivityController extends Controller
             return $model;
         }
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function actionSend()
+    {
+        if (($recipient = User::findById(\Yii::$app->request->get('to')) !== null)
+            && ($activity = Activity::findActivity(\Yii::$app->request->get('id')) !== null)) {
+           $mail = \Yii::$app->mailer->compose(
+                ['html' => 'notification/html',
+                    ['user'=>$recipient, 'activity'=>$activity]])
+                ->setFrom("noreply@mail.net")
+                ->setTo($recipient->email)
+                ->setSubject("Уведомление о событии: ". $activity->name)
+                ->setCharset("UTF-8")
+                ->send();
+        }
+        if ($mail === true)
+        {
+            return $this->redirect(\Yii::$app->request->referrer ?: \Yii::$app->homeUrl);
+        }
+        else{
+            throw new Exception('Отправка не удалась... =(');
+        }
+
     }
 
 }

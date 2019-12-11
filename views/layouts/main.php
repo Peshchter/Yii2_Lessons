@@ -51,14 +51,22 @@ AppAsset::register($this);
         if (\Yii::$app->user->identity->role == 'admin') {
             $menuItems[] = ['label' => 'Пользователи', 'url' => ['/users']];
         }
-        $menuItems[] = '<li>'
-            . Html::beginForm(['/site/logout'], 'post')
-            . Html::submitButton(
-                'Выход (' . Yii::$app->user->identity->username . ')',
-                ['class' => 'btn btn-link logout']
-            )
-            . Html::endForm()
-            . '</li>';
+        $menuItems[] = [
+            'url' => ['/users/profile'],
+            'options' => ['class' => 'dropdown'],
+            'label' => 'Аккаунт',
+            'items' => [
+                ['label' => 'Профиль', 'url' => ['/users/profile']],
+                '<li>'
+                . Html::beginForm(['/site/logout'], 'post')
+                . Html::submitButton(
+                    'Выход (' . Yii::$app->user->identity->username . ')',
+                    ['class' => 'btn btn-link logout']
+                )
+                . Html::endForm()
+                . '</li>'
+            ]
+        ];
     }
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
