@@ -85,7 +85,17 @@ $this->params['breadcrumbs'][] = $this->title;
             //'created_at',
             //'updated_at',
 
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'buttons' => [
+                        'mail'=>function($url, $model,$key)
+                        {
+                            $icon = Html::tag('span', '',['class'=>"glyphicon glyphicon-envelope"]);
+                            return Html::a($icon, ['/activity/send','id'=>$model->id,'to'=>$model->user->id]);
+                        }
+                ],
+                'template' => '{view} {update} {delete} {mail}',
+                ],
         ],
     ]); ?>
 

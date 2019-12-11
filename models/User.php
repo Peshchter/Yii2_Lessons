@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\components\behaviors\CacheBehavior;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
@@ -21,11 +22,9 @@ use yii\web\IdentityInterface;
  * @property int $created_at
  * @property int $updated_at
  * @property string $role
-
  * @property string $password write-only password
  * @property Activity[] $activities
  */
-
 class User extends ActiveRecord implements IdentityInterface
 {
     const STATUS_DELETED = 0;
@@ -61,7 +60,10 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             TimestampBehavior::class,
-
+            CacheBehavior::class => [
+                'class'=>CacheBehavior::class,
+                'cacheKey'=>self::TableName()
+            ]
         ];
     }
 
@@ -106,6 +108,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
     }
+
     /**
      * Finds user by id
      *
@@ -178,4 +181,15 @@ class User extends ActiveRecord implements IdentityInterface
         return $this->hasMany(Activity::class, ['user_id' => 'id']);
     }
 
+    public static function findOne($condition)
+    {
+
+        if (\Yii::$app->cache->exists(self::tableName() . "_" . $condition) === false) {
+            $result = parent::findOne($condition);
+            \Yii::$app->cache->set(self::tableName() . "_" . $condition, $result);
+            return $result;
+        } else {
+            return \Yii::$app->cache->get(self::tableName() . "_" . $condition);
+        }
+    }
 }

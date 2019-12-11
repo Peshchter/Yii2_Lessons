@@ -144,4 +144,10 @@ class UsersController extends Controller
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
+    public function actionProfile()
+    {
+        $model = \Yii::$app->user->identity;
+        return $this->render('profile', ['model'=>$model]);
+    }
+
 }
